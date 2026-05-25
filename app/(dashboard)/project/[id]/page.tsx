@@ -24,6 +24,9 @@ export default async function ProjectPage({
       userId: session.id,
     },
     include: {
+      budget: true,
+      castCrew: true,
+      locations: true,
       scripts: {
         orderBy: {
           uploadedAt: 'desc',
@@ -47,10 +50,23 @@ export default async function ProjectPage({
     redirect('/');
   }
 
-  // Format project dates for serialization (Date to ISO string)
+  // Format project dates and Decimal objects for serialization (to standard JS primitives)
   const formattedProject = {
     ...project,
     createdAt: project.createdAt.toISOString(),
+    budget: project.budget
+      ? {
+          ...project.budget,
+          totalEstimated: Number(project.budget.totalEstimated),
+          totalSpent: Number(project.budget.totalSpent),
+        }
+      : null,
+    castCrew: project.castCrew.map((c) => ({
+      ...c,
+    })),
+    locations: project.locations.map((l) => ({
+      ...l,
+    })),
     scripts: project.scripts.map((script) => ({
       ...script,
       uploadedAt: script.uploadedAt.toISOString(),

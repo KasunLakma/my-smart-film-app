@@ -4,6 +4,9 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import StoryboardView from './StoryboardView';
+import BudgetView from './BudgetView';
+import CrewView from './CrewView';
+import LocationView from './LocationView';
 
 interface Storyboard {
   id: string;
@@ -28,12 +31,37 @@ interface Script {
   scenes?: Scene[];
 }
 
+interface Budget {
+  id: string;
+  totalEstimated: number;
+  totalSpent: number;
+}
+
+interface CrewMember {
+  id: string;
+  name: string;
+  type: 'CAST' | 'CREW';
+  roleName: string;
+  email: string | null;
+  phone: string | null;
+}
+
+interface Location {
+  id: string;
+  name: string;
+  description: string | null;
+  imageUrl: string | null;
+}
+
 interface Project {
   id: string;
   title: string;
   description: string | null;
   createdAt: Date | string;
   scripts: Script[];
+  budget: Budget | null;
+  castCrew: CrewMember[];
+  locations: Location[];
 }
 
 interface ProjectClientProps {
@@ -47,7 +75,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [activeTab, setActiveTab] = useState<'scripts' | 'scenes' | 'storyboards'>('scripts');
+  const [activeTab, setActiveTab] = useState<'scripts' | 'scenes' | 'storyboards' | 'budget' | 'crew' | 'locations'>('scripts');
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -140,7 +168,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           className={`px-6 py-3.5 text-sm font-bold border-b-2 cursor-pointer transition-all duration-200 ${
             activeTab === 'scripts'
               ? 'border-violet-500 text-violet-400'
-              : 'border-transparent text-slate-500 hover:text-slate-3.5'
+              : 'border-transparent text-slate-500 hover:text-slate-350'
           }`}
         >
           📄 Uploaded Scripts ({scripts.length})
@@ -150,7 +178,7 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           className={`px-6 py-3.5 text-sm font-bold border-b-2 cursor-pointer transition-all duration-200 ${
             activeTab === 'scenes'
               ? 'border-violet-500 text-violet-400'
-              : 'border-transparent text-slate-500 hover:text-slate-3.5'
+              : 'border-transparent text-slate-500 hover:text-slate-350'
           }`}
         >
           🎬 Seeded Scenes ({allScenes.length})
@@ -160,17 +188,59 @@ export default function ProjectClient({ project }: ProjectClientProps) {
           className={`px-6 py-3.5 text-sm font-bold border-b-2 cursor-pointer transition-all duration-200 ${
             activeTab === 'storyboards'
               ? 'border-violet-500 text-violet-400'
-              : 'border-transparent text-slate-500 hover:text-slate-3.5'
+              : 'border-transparent text-slate-500 hover:text-slate-350'
           }`}
         >
           🖼️ Storyboard Board ({allScenes.filter((s) => s.storyboards && s.storyboards.length > 0).length}/{allScenes.length})
+        </button>
+        <button
+          onClick={() => setActiveTab('budget')}
+          className={`px-6 py-3.5 text-sm font-bold border-b-2 cursor-pointer transition-all duration-200 ${
+            activeTab === 'budget'
+              ? 'border-violet-500 text-violet-400'
+              : 'border-transparent text-slate-500 hover:text-slate-350'
+          }`}
+        >
+          💰 Budget Tracker
+        </button>
+        <button
+          onClick={() => setActiveTab('crew')}
+          className={`px-6 py-3.5 text-sm font-bold border-b-2 cursor-pointer transition-all duration-200 ${
+            activeTab === 'crew'
+              ? 'border-violet-500 text-violet-400'
+              : 'border-transparent text-slate-500 hover:text-slate-350'
+          }`}
+        >
+          👥 Cast & Crew ({project.castCrew?.length || 0})
+        </button>
+        <button
+          onClick={() => setActiveTab('locations')}
+          className={`px-6 py-3.5 text-sm font-bold border-b-2 cursor-pointer transition-all duration-200 ${
+            activeTab === 'locations'
+              ? 'border-violet-500 text-violet-400'
+              : 'border-transparent text-slate-500 hover:text-slate-350'
+          }`}
+        >
+          📍 Scouting Board ({project.locations?.length || 0})
         </button>
       </div>
 
       {/* Render View based on Active Tab */}
       {activeTab === 'storyboards' ? (
-        <div className="w-full">
+        <div className="w-full animate-fadeIn">
           <StoryboardView scenes={allScenes} />
+        </div>
+      ) : activeTab === 'budget' ? (
+        <div className="w-full animate-fadeIn">
+          <BudgetView projectId={project.id} initialBudget={project.budget} />
+        </div>
+      ) : activeTab === 'crew' ? (
+        <div className="w-full animate-fadeIn">
+          <CrewView projectId={project.id} initialCrew={project.castCrew} />
+        </div>
+      ) : activeTab === 'locations' ? (
+        <div className="w-full animate-fadeIn">
+          <LocationView projectId={project.id} initialLocations={project.locations} />
         </div>
       ) : (
         <div className="grid gap-8 lg:grid-cols-3">
