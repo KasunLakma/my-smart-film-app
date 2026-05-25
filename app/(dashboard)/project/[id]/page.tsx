@@ -33,6 +33,9 @@ export default async function ProjectPage({
             orderBy: {
               sceneNumber: 'asc',
             },
+            include: {
+              storyboards: true,
+            },
           },
         },
       },
@@ -53,6 +56,10 @@ export default async function ProjectPage({
       uploadedAt: script.uploadedAt.toISOString(),
       scenes: script.scenes.map((scene) => ({
         ...scene,
+        storyboards: scene.storyboards.map((sb) => ({
+          ...sb,
+          createdAt: sb.createdAt.toISOString(),
+        })),
       })),
     })),
   };
