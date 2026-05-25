@@ -1,13 +1,105 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../app/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
 }
+
+enum Role {
+  DIRECTOR
+  PRODUCER
+  CREW
+}
+
+enum CastCrewType {
+  CAST
+  CREW
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  name      String
+  role      Role      @default(CREW)
+  projects  Project[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Project {
+  id          String     @id @default(uuid())
+  title       String
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  scripts     Script[]
+  budget      Budget?
+  locations   Location[]
+  castCrew    CastCrew[]
+}
+
+model Script {
+  id         String   @id @default(uuid())
+  fileName   String
+  fileUrl    String
+  uploadedAt DateTime @default(now())
+  projectId  String
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  scenes     Scene[]
+}
+
+model Scene {
+  id          String       @id @default(uuid())
+  sceneNumber Int
+  title       String
+  description String?
+  scriptId    String
+  script      Script       @relation(fields: [scriptId], references: [id], onDelete: Cascade)
+  storyboards Storyboard[]
+}
+
+model Storyboard {
+  id         String   @id @default(uuid())
+  imageUrl   String
+  promptUsed String?
+  createdAt  DateTime @default(now())
+  sceneId    String
+  scene      Scene    @relation(fields: [sceneId], references: [id], onDelete: Cascade)
+}
+
+model Budget {
+  id             String   @id @default(uuid())
+  totalEstimated Decimal  @db.Decimal(12, 2)
+  totalSpent     Decimal  @default(0) @db.Decimal(12, 2)
+  projectId      String   @unique
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Location {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  imageUrl    String?
+  projectId   String
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model CastCrew {
+  id        String       @id @default(uuid())
+  name      String
+  type      CastCrewType
+  roleName  String
+  email     String?
+  phone     String?
+  projectId String
+  project   Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
