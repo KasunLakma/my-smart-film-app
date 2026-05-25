@@ -66,16 +66,21 @@ interface Project {
 
 interface ProjectClientProps {
   project: Project;
+  defaultTab?: string;
 }
 
-export default function ProjectClient({ project }: ProjectClientProps) {
+export default function ProjectClient({ project, defaultTab }: ProjectClientProps) {
   const router = useRouter();
   const [scripts, setScripts] = useState<Script[]>(project.scripts);
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [activeTab, setActiveTab] = useState<'scripts' | 'scenes' | 'storyboards' | 'budget' | 'crew' | 'locations'>('scripts');
+  const [activeTab, setActiveTab] = useState<'scripts' | 'scenes' | 'storyboards' | 'budget' | 'crew' | 'locations'>(
+    (defaultTab === 'crew' || defaultTab === 'budget' || defaultTab === 'locations' || defaultTab === 'storyboards' || defaultTab === 'scenes' || defaultTab === 'scripts')
+      ? defaultTab as any
+      : 'scripts'
+  );
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

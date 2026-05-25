@@ -1,8 +1,8 @@
-import Link from 'next/link';
 import { ReactNode } from 'react';
 import { getSession } from '../../lib/auth';
 import { redirect } from 'next/navigation';
 import LogoutButton from './LogoutButton';
+import SidebarNav from './SidebarNav';
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const session = await getSession();
@@ -33,36 +33,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
             </span>
           </div>
 
-          <nav className="space-y-1.5">
-            <Link
-              href="/"
-              className="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-lg bg-slate-950 text-violet-400 border-l-2 border-violet-500 transition-all duration-200"
-            >
-              <span>📊</span>
-              <span>Dashboard</span>
-            </Link>
-            <Link
-              href="/"
-              className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-950/40 border-l-2 border-transparent transition-all duration-200"
-            >
-              <span>🎥</span>
-              <span>Projects</span>
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-slate-500 cursor-not-allowed border-l-2 border-transparent"
-            >
-              <span>👥</span>
-              <span>Cast & Crew</span>
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-slate-500 cursor-not-allowed border-l-2 border-transparent"
-            >
-              <span>📅</span>
-              <span>Schedule</span>
-            </Link>
-          </nav>
+          <SidebarNav />
         </div>
 
         {/* Footer info in sidebar */}

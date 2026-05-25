@@ -22,11 +22,22 @@ export default function LocationView({ projectId, initialLocations }: LocationVi
   const [loading, setLoading] = useState(false);
   const [actionLoadingMap, setActionLoadingMap] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState({ name: '', description: '' });
+  const [formData, setFormData] = useState({ name: '', description: '', imageUrl: '' });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({ ...prev, imageUrl: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleAddLocation = async (e: React.FormEvent) => {
@@ -54,7 +65,7 @@ export default function LocationView({ projectId, initialLocations }: LocationVi
       }
 
       setLocations((prev) => [...prev, data.location]);
-      setFormData({ name: '', description: '' });
+      setFormData({ name: '', description: '', imageUrl: '' });
       setIsModalOpen(false);
       router.refresh();
     } catch (err: any) {
@@ -212,13 +223,65 @@ export default function LocationView({ projectId, initialLocations }: LocationVi
                 <textarea
                   id="description"
                   name="description"
-                  rows={4}
+                  rows={3}
                   disabled={loading}
                   value={formData.description}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-lg bg-slate-950/60 border border-slate-800 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/20 outline-none text-slate-100 placeholder-slate-650 text-sm transition-all duration-200 resize-none"
+                  className="w-full px-4 py-2.5 rounded-lg bg-slate-950/60 border border-slate-800 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/20 outline-none text-slate-100 placeholder-slate-650 text-xs transition-all duration-200 resize-none"
                   placeholder="Detail logistics, lighting features, permit requirements, and set vibe..."
                 />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400" htmlFor="imageUrl">
+                  Image URL
+                </label>
+                <input
+                  id="imageUrl"
+                  name="imageUrl"
+                  type="text"
+                  disabled={loading || formData.imageUrl.startsWith('data:image')}
+                  value={formData.imageUrl.startsWith('data:image') ? 'Local file uploaded' : formData.imageUrl}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2.5 rounded-lg bg-slate-950/60 border border-slate-800 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/20 outline-none text-slate-100 placeholder-slate-650 text-xs transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
+                  placeholder="https://images.unsplash.com/... (or upload below)"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Or Upload Photo
+                </label>
+                <div className="flex items-center gap-3">
+                  <label className="flex-1 flex flex-col items-center justify-center px-4 py-3 bg-slate-950/60 border border-dashed border-slate-800 hover:border-slate-700 rounded-lg cursor-pointer transition-all duration-200 group text-center">
+                    <span className="text-slate-400 group-hover:text-slate-300 text-xs font-medium">
+                      Select local image
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      disabled={loading}
+                      className="hidden"
+                    />
+                  </label>
+                  {formData.imageUrl && (
+                    <div className="relative w-12 h-12 rounded-lg overflow-hidden border border-slate-800 bg-slate-950 shrink-0">
+                      <img
+                        src={formData.imageUrl}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setFormData((prev) => ({ ...prev, imageUrl: '' }))}
+                        className="absolute inset-0 bg-black/75 opacity-0 hover:opacity-100 flex items-center justify-center text-red-400 text-[10px] font-bold transition-opacity duration-200"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="flex gap-3 justify-end pt-4 border-t border-slate-800">

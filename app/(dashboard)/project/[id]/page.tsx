@@ -5,8 +5,10 @@ import ProjectClient from './ProjectClient';
 
 export default async function ProjectPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<{ tab?: string }>;
 }) {
   const session = await getSession();
 
@@ -16,6 +18,8 @@ export default async function ProjectPage({
   }
 
   const { id } = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const defaultTab = resolvedSearchParams.tab || 'scripts';
 
   // Retrieve the project details from the database (ensuring user owns it)
   const project = await prisma.project.findFirst({
@@ -80,5 +84,5 @@ export default async function ProjectPage({
     })),
   };
 
-  return <ProjectClient project={formattedProject} />;
+  return <ProjectClient project={formattedProject} defaultTab={defaultTab} />;
 }
