@@ -1,43 +1,101 @@
-import Link from 'next/link'
-import { ReactNode } from 'react'
+import Link from 'next/link';
+import { ReactNode } from 'react';
+import { getSession } from '../../lib/auth';
+import { redirect } from 'next/navigation';
+import LogoutButton from './LogoutButton';
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default async function DashboardLayout({ children }: { children: ReactNode }) {
+  const session = await getSession();
+
+  // Enforce server-side authentication
+  if (!session) {
+    redirect('/login');
+  }
+
+  // Define role badge styling
+  const roleColors: Record<string, string> = {
+    DIRECTOR: 'bg-rose-500/10 text-rose-400 border-rose-500/30',
+    PRODUCER: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30',
+    CREW: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',
+  };
+
+  const badgeClass = roleColors[session.role] || 'bg-slate-500/10 text-slate-400 border-slate-500/30';
+
   return (
-    <div className="flex min-h-screen flex-col md:flex-row bg-gray-100 dark:bg-gray-900">
+    <div className="flex min-h-screen flex-col md:flex-row bg-slate-950 text-slate-100 font-sans">
       {/* Sidebar Navigation */}
-      <aside className="w-full md:w-64 bg-white dark:bg-gray-800 shadow-md">
-        <div className="p-4 border-b dark:border-gray-700">
-          <h1 className="text-xl font-bold text-gray-800 dark:text-white">Smart Film Prod</h1>
+      <aside className="w-full md:w-64 bg-slate-900 border-b md:border-b-0 md:border-r border-slate-800/80 flex flex-col justify-between p-6 shrink-0">
+        <div className="space-y-8">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">🎬</span>
+            <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
+              Smart Film App
+            </span>
+          </div>
+
+          <nav className="space-y-1.5">
+            <Link
+              href="/"
+              className="flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-lg bg-slate-950 text-violet-400 border-l-2 border-violet-500 transition-all duration-200"
+            >
+              <span>📊</span>
+              <span>Dashboard</span>
+            </Link>
+            <Link
+              href="/"
+              className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-950/40 border-l-2 border-transparent transition-all duration-200"
+            >
+              <span>🎥</span>
+              <span>Projects</span>
+            </Link>
+            <Link
+              href="#"
+              className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-slate-500 cursor-not-allowed border-l-2 border-transparent"
+            >
+              <span>👥</span>
+              <span>Cast & Crew</span>
+            </Link>
+            <Link
+              href="#"
+              className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-slate-500 cursor-not-allowed border-l-2 border-transparent"
+            >
+              <span>📅</span>
+              <span>Schedule</span>
+            </Link>
+          </nav>
         </div>
-        <nav className="p-4 space-y-2">
-          <Link href="/" className="block px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
-            Dashboard
-          </Link>
-          <Link href="#" className="block px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
-            Projects
-          </Link>
-          <Link href="#" className="block px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
-            Cast & Crew
-          </Link>
-          <Link href="#" className="block px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
-            Schedule
-          </Link>
-        </nav>
+
+        {/* Footer info in sidebar */}
+        <div className="pt-6 border-t border-slate-800/60 mt-6 hidden md:block">
+          <p className="text-[10px] text-slate-500">
+            © 2026 Smart Film Prod.
+          </p>
+        </div>
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 p-8">
-        <header className="flex justify-between items-center mb-8 pb-4 border-b dark:border-gray-700">
-          <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">Overview</h2>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-500 dark:text-gray-400">Welcome, User</span>
-            <Link href="/login" className="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-500 transition-colors">
-              Logout
-            </Link>
+      <div className="flex-1 flex flex-col min-w-0">
+        <header className="flex justify-between items-center p-6 border-b border-slate-800/80 bg-slate-900/40 backdrop-blur-md">
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Management System</span>
+            <h2 className="text-xl font-bold text-slate-100">Overview</h2>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col items-end hidden sm:flex">
+              <span className="text-sm font-semibold text-slate-200">{session.name}</span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded border mt-0.5 tracking-wider uppercase ${badgeClass}`}>
+                {session.role}
+              </span>
+            </div>
+            <LogoutButton />
           </div>
         </header>
-        {children}
-      </main>
+
+        <main className="flex-1 p-6 md:p-8 overflow-y-auto">
+          {children}
+        </main>
+      </div>
     </div>
-  )
+  );
 }
