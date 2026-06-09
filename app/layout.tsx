@@ -1,16 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Smart Film Production Management",
@@ -25,9 +14,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className="h-full antialiased"
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col text-zinc-100 antialiased selection:bg-purple-500/30">
+        <div 
+          className="relative min-h-screen flex flex-col z-0"
+          style={{ background: 'radial-gradient(at top, rgba(147, 51, 234, 0.08), transparent 50%), #0a0a0c' }}
+        >
+          {children}
+        </div>
+      </body>
     </html>
   );
 }

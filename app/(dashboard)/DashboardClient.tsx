@@ -73,47 +73,47 @@ export default function DashboardClient({ initialProjects }: DashboardClientProp
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 relative z-10">
       {/* Header Controls */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-900">
-        <div className="relative w-full sm:max-w-xs">
-          <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-500">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-white/[0.05]">
+        <div className="relative w-full sm:max-w-xs group">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-zinc-500 group-focus-within:text-purple-400 transition-colors duration-300">
             🔍
           </span>
           <input
             type="text"
-            placeholder="Search projects..."
+            placeholder="SEARCH PRODUCTIONS..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2.5 bg-slate-900 border border-slate-800 focus:border-violet-500 rounded-lg outline-none text-sm text-slate-100 placeholder-slate-500 transition-all duration-200"
+            className="w-full pl-10 pr-4 py-2.5 bg-zinc-950/40 backdrop-blur-2xl border border-white/[0.08] hover:border-white/[0.12] focus:border-purple-500/40 focus:ring-4 focus:ring-purple-500/5 rounded-full outline-none text-xs text-zinc-150 placeholder-zinc-500 transition-all duration-300 font-mono tracking-wider shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]"
           />
         </div>
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold text-sm rounded-lg shadow-lg shadow-violet-600/20 hover:shadow-violet-600/30 transition-all duration-200 cursor-pointer flex items-center justify-center gap-2"
+          className="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-purple-700 via-indigo-700 to-fuchsia-700 hover:from-purple-600 hover:via-indigo-600 hover:to-fuchsia-600 text-white font-bold tracking-widest text-[9px] font-mono rounded-full glow-pill-shadow transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2 border border-white/[0.1]"
         >
           <span>➕</span>
-          <span>Create New Project</span>
+          <span>CREATE PRODUCTION</span>
         </button>
       </div>
 
       {/* Projects Grid */}
       {filteredProjects.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-12 bg-slate-900/20 border border-dashed border-slate-800/80 rounded-2xl text-center space-y-4">
-          <span className="text-4xl">🎬</span>
-          <div className="space-y-1">
-            <h3 className="text-lg font-bold text-slate-200">No projects found</h3>
-            <p className="text-sm text-slate-500 max-w-sm">
-              {searchQuery ? "No matches for your search query." : "Get started by creating your first film production project."}
+        <div className="spatial-glass max-w-2xl mx-auto my-4 p-12 text-center space-y-6 rounded-3xl hover:border-purple-500/20 transition-all duration-500 ease-out">
+          <span className="text-5xl drop-shadow-[0_4px_20px_rgba(168,85,247,0.45)]">🎬</span>
+          <div className="space-y-2">
+            <h3 className="text-xs font-black tracking-[0.25em] text-white uppercase font-mono">NO ACTIVE PRODUCTIONS</h3>
+            <p className="text-xs text-zinc-450 max-w-md mx-auto leading-relaxed">
+              {searchQuery ? "No matches found for your search query. Try typing another production title." : "Ready to direct your next masterpiece? Create your first production to start organizing scripts, crew, and shoot locations."}
             </p>
           </div>
           {!searchQuery && (
             <button
               onClick={() => setIsModalOpen(true)}
-              className="px-4 py-2 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-sm font-semibold rounded-lg text-violet-400 hover:text-violet-300 transition-colors cursor-pointer"
+              className="px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/[0.08] hover:border-purple-500/30 text-[8px] font-mono font-bold tracking-widest uppercase rounded-full text-purple-300 hover:text-purple-200 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer shadow-md"
             >
-              Create Project
+              GET STARTED
             </button>
           )}
         </div>
@@ -130,36 +130,39 @@ export default function DashboardClient({ initialProjects }: DashboardClientProp
               <Link
                 key={project.id}
                 href={`/project/${project.id}`}
-                className="group relative flex flex-col justify-between p-6 bg-slate-900/40 hover:bg-slate-900/80 border border-slate-800/60 hover:border-violet-500/50 rounded-2xl shadow-xl hover:shadow-2xl hover:shadow-violet-600/5 transition-all duration-300"
+                className="group relative flex flex-col justify-between p-6 aspect-[16/9] spatial-glass spatial-hover-glow rounded-3xl overflow-hidden cursor-pointer"
               >
-                <div className="space-y-3">
+                {/* Subtle Cinematic Lens vignette */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent pointer-events-none z-0" />
+                
+                <div className="space-y-3 relative z-10">
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-violet-500/10 text-violet-400 border border-violet-500/20">
-                      Pre-Production
+                    <span className="text-[8px] font-bold tracking-[0.2em] uppercase px-3 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 shadow-[0_0_12px_rgba(168,85,247,0.1)] font-mono">
+                      PRE-PROD
                     </span>
-                    <span className="text-[10px] text-slate-500 font-medium">
-                      Created {dateStr}
+                    <span className="text-[8px] text-zinc-500 font-mono tracking-wider">
+                      {dateStr}
                     </span>
                   </div>
-                  <h3 className="text-lg font-bold text-slate-200 group-hover:text-violet-400 transition-colors line-clamp-1">
+                  <h3 className="text-sm font-black tracking-widest text-zinc-100 uppercase group-hover:text-purple-350 transition-colors duration-300 line-clamp-1 mt-1 font-mono">
                     {project.title}
                   </h3>
-                  <p className="text-sm text-slate-400 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
                     {project.description || 'No description provided.'}
                   </p>
                 </div>
 
-                <div className="flex justify-between items-center pt-6 border-t border-slate-800/60 mt-6 text-xs text-slate-500">
+                <div className="flex justify-between items-center pt-4 border-t border-white/[0.05] text-[9px] text-zinc-500 font-mono tracking-wide relative z-10">
                   <div className="flex items-center gap-3">
                     <span className="flex items-center gap-1">
-                      📄 <strong className="text-slate-400">{project.scripts?.length || 0}</strong> script(s)
+                      📄 <strong className="text-zinc-300">{project.scripts?.length || 0}</strong> SCRIPTS
                     </span>
                     <span className="flex items-center gap-1">
-                      👥 <strong className="text-slate-400">{project.castCrew?.length || 0}</strong> crew
+                      👥 <strong className="text-zinc-300">{project.castCrew?.length || 0}</strong> CREW
                     </span>
                   </div>
-                  <span className="text-violet-500 opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
-                    Open ➔
+                  <span className="text-purple-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-300 font-bold tracking-widest uppercase">
+                    OPEN ➔
                   </span>
                 </div>
               </Link>
@@ -170,29 +173,29 @@ export default function DashboardClient({ initialProjects }: DashboardClientProp
 
       {/* Create Project Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
-          <div className="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-6">
-            <div className="flex justify-between items-center pb-4 border-b border-slate-800">
-              <h3 className="text-lg font-bold text-slate-100">Create New Project</h3>
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
+          <div className="w-full max-w-md bg-zinc-900/60 backdrop-blur-3xl border border-white/[0.08] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] rounded-3xl p-6 space-y-6 transition-all duration-300">
+            <div className="flex justify-between items-center pb-4 border-b border-white/[0.05]">
+              <h3 className="text-sm font-black tracking-[0.2em] text-white uppercase font-mono">CREATE PRODUCTION</h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-500 hover:text-slate-350 text-xl cursor-pointer"
+                className="text-zinc-500 hover:text-zinc-300 text-lg transition-colors duration-205 cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             {error && (
-              <div className="bg-red-500/10 border border-red-500/30 text-red-200 px-4 py-3 rounded-lg text-sm flex items-center gap-2">
+              <div className="bg-rose-500/10 border border-rose-500/20 text-rose-300 px-4 py-3 rounded-xl text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(244,63,94,0.05)] font-mono">
                 <span>⚠️</span>
                 <span>{error}</span>
               </div>
             )}
 
-            <form onSubmit={handleCreateProject} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400" htmlFor="title">
-                  Project Title
+            <form onSubmit={handleCreateProject} className="space-y-5">
+              <div className="space-y-2">
+                <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-400 font-mono" htmlFor="title">
+                  PROJECT TITLE
                 </label>
                 <input
                   id="title"
@@ -202,14 +205,14 @@ export default function DashboardClient({ initialProjects }: DashboardClientProp
                   disabled={loading}
                   value={formData.title}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-lg bg-slate-950/60 border border-slate-800 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/20 outline-none text-slate-100 placeholder-slate-650 text-sm transition-all duration-200"
-                  placeholder="e.g. Inception Sequel"
+                  className="w-full px-4 py-3 rounded-2xl bg-zinc-950/60 border border-white/[0.06] focus:border-purple-500/40 focus:ring-4 focus:ring-purple-500/5 outline-none text-zinc-150 placeholder-zinc-500 text-xs transition-all duration-300 font-mono shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]"
+                  placeholder="E.G. INCEPTION SEQUEL"
                 />
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-semibold uppercase tracking-wider text-slate-400" htmlFor="description">
-                  Description
+              <div className="space-y-2">
+                <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-400 font-mono" htmlFor="description">
+                  DESCRIPTION
                 </label>
                 <textarea
                   id="description"
@@ -218,25 +221,25 @@ export default function DashboardClient({ initialProjects }: DashboardClientProp
                   disabled={loading}
                   value={formData.description}
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 rounded-lg bg-slate-950/60 border border-slate-800 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/20 outline-none text-slate-100 placeholder-slate-650 text-sm transition-all duration-200 resize-none"
+                  className="w-full px-4 py-3 rounded-2xl bg-zinc-950/60 border border-white/[0.06] focus:border-purple-500/40 focus:ring-4 focus:ring-purple-500/5 outline-none text-zinc-150 placeholder-zinc-500 text-xs transition-all duration-300 resize-none font-mono shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)]"
                   placeholder="Summarize the logline, premise, or production scope..."
                 />
               </div>
 
-              <div className="flex gap-3 justify-end pt-4 border-t border-slate-800">
+              <div className="flex gap-3 justify-end pt-5 border-t border-white/[0.05]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-sm font-semibold rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border border-transparent cursor-pointer"
+                  className="px-5 py-2.5 text-[9px] font-mono font-bold tracking-widest uppercase rounded-full text-zinc-450 hover:text-zinc-200 hover:bg-white/5 border border-transparent transition-all duration-300 cursor-pointer"
                 >
-                  Cancel
+                  CANCEL
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-5 py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold text-sm rounded-lg shadow-md transition-all duration-200 cursor-pointer disabled:opacity-50"
+                  className="px-6 py-2.5 bg-gradient-to-r from-purple-700 to-indigo-700 hover:from-purple-600 hover:to-indigo-600 text-white font-bold tracking-widest text-[9px] font-mono rounded-full glow-pill-shadow border border-white/[0.1] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] cursor-pointer disabled:opacity-50"
                 >
-                  {loading ? 'Creating...' : 'Create Project'}
+                  {loading ? 'CREATING...' : 'CREATE PROJECT'}
                 </button>
               </div>
             </form>
